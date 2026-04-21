@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: civicfix-db
+    environment:
+      POSTGRES_DB: ${DB_NAME:-civicfix_db}
+      POSTGRES_USER: ${DB_USER:-civicfix_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-civicfix_pass}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-civicfix_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - civicfix-network
+
+  # Django Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: civicfix-backend
+    command: gunicorn civicfix.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120
+    volumes:
+      - ./backend:/app
+      - media_files:/app/media
+      - static_files:/app/staticfiles
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - civicfix-network
+    restart: unless-stopped
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: civicfix-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - civicfix-network
+    restart: unless-stopped
+
+  # Nginx Reverse Proxy (optional - for production with SSL)
+  nginx:
+    image: nginx:alpine
+    container_name: civicfix-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - media_files:/media:ro
+      - static_files:/static:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - civicfix-network
+    restart: unless-stopped
+    profiles:
+      - production
+
+volumes:
+  postgres_data:
+    driver: local
+  media_files:
+    driver: local
+  static_files:
+    driver: local
+
+networks:
+  civicfix-network:
+    driver: bridge

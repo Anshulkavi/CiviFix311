@@ -16,7 +16,9 @@ staticfiles/
 
 # Development
 .env
-.env.local
+.env.*
+!.env.example
+!.env.*.example
 *.swp
 *.swo
 *~

@@ -8,6 +8,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [approvalError, setApprovalError] = useState(null); // { type: 'pending' | 'rejected', message: string }
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -120,8 +121,17 @@ export default function LoginPage() {
               <div className="flex items-center justify-between">
                 <label className="block text-sm font-semibold text-navy-dark" htmlFor="password">Password</label>
               </div>
-              <div className="mt-2">
-                <input className="block w-full rounded-xl border-slate-200 bg-white px-4 py-4 text-slate-900 shadow-sm transition focus:border-primary focus:ring-primary sm:text-sm" id="password" placeholder="••••••••" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+              <div className="mt-2 relative">
+                <input className="block w-full rounded-xl border-slate-200 bg-white px-4 py-4 pr-12 text-slate-900 shadow-sm transition focus:border-primary focus:ring-primary sm:text-sm" id="password" placeholder="••••••••" type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
+                >
+                  <span className="material-symbols-outlined text-xl">
+                    {showPassword ? 'visibility_off' : 'visibility'}
+                  </span>
+                </button>
               </div>
             </div>
             <div className="flex items-center">

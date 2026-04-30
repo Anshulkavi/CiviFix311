@@ -20,6 +20,8 @@ export default function RegisterPage() {
     department: ''
   });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
 
   useEffect(() => {
     // Fetch departments for officer/depthead selection
@@ -325,26 +327,48 @@ export default function RegisterPage() {
 
                 <div>
                   <label className="block text-sm font-semibold text-navy-dark">Password *</label>
-                  <input
-                    required
-                    type="password"
-                    className="mt-1 block w-full rounded-xl border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-                    placeholder="••••••••"
-                    value={form.password}
-                    onChange={set('password')}
-                  />
+                  <div className="mt-1 relative">
+                    <input
+                      required
+                      type={showPassword ? "text" : "password"}
+                      className="block w-full rounded-xl border-slate-200 bg-white px-4 py-3 pr-12 text-slate-900 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                      placeholder="••••••••"
+                      value={form.password}
+                      onChange={set('password')}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
+                    >
+                      <span className="material-symbols-outlined text-xl">
+                        {showPassword ? 'visibility_off' : 'visibility'}
+                      </span>
+                    </button>
+                  </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-semibold text-navy-dark">Confirm Password *</label>
-                  <input
-                    required
-                    type="password"
-                    className="mt-1 block w-full rounded-xl border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-                    placeholder="••••••••"
-                    value={form.password2}
-                    onChange={set('password2')}
-                  />
+                  <div className="mt-1 relative">
+                    <input
+                      required
+                      type={showPassword2 ? "text" : "password"}
+                      className="block w-full rounded-xl border-slate-200 bg-white px-4 py-3 pr-12 text-slate-900 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                      placeholder="••••••••"
+                      value={form.password2}
+                      onChange={set('password2')}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword2(!showPassword2)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
+                    >
+                      <span className="material-symbols-outlined text-xl">
+                        {showPassword2 ? 'visibility_off' : 'visibility'}
+                      </span>
+                    </button>
+                  </div>
                 </div>
 
                 <button

@@ -69,3 +69,8 @@ htmlcov/
 # OS
 Thumbs.db
 .DS_Store
+
+# Documentation/Reports (not for version control)
+*_REPORT.md
+*_GUIDE.md
+MEDICAPS*.md
